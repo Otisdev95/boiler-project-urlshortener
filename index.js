@@ -54,9 +54,10 @@ app.get('/api/shorturl/:shorturl', (res, req) => {
 
   if (foundIndex < 0) {
     return res.json({
-      'error': 'No short URL ffound for the given input'
+      'error': 'No short URL found for the given input'
     });
   }
+  
   res.redirect(originalUrls[foundIndex]);
 });
 
