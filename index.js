@@ -48,7 +48,7 @@ app.post('/api/shorturl', (req, res) => {
   });
 });
 
-app.get('/api/shorturl/:shorturl', (res, req) => {
+app.get('/api/shorturl/:shorturl', (req, res) => {
   const shorturl = parseInt(req.params.shorturl);
   const foundIndex = shortUrls.indexOf(shorturl);
 
@@ -57,7 +57,7 @@ app.get('/api/shorturl/:shorturl', (res, req) => {
       'error': 'No short URL found for the given input'
     });
   }
-  
+
   res.redirect(originalUrls[foundIndex]);
 });
 
