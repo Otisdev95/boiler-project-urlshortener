@@ -8,6 +8,8 @@ const port = process.env.PORT || 3000;
 
 app.use(cors());
 
+app.use(express.urlencoded({ extended: true }));
+
 app.use('/public', express.static(`${process.cwd()}/public`));
 
 app.get('/', function(req, res) {
@@ -17,6 +19,45 @@ app.get('/', function(req, res) {
 // Your first API endpoint
 app.get('/api/hello', function(req, res) {
   res.json({ greeting: 'hello API' });
+});
+
+const originalUrls = [];
+const shortUrls = [];
+
+app.post('/api/shorturl', (res, req) => {
+  const url = req.body.url;
+  const foundIndex = originalUrls.indexOf(url);
+
+  if (!url.includes('https://') && !url.includes('http://')) {
+    return res.json({ error: 'invalid url' });
+  };
+
+  if (foundIndex < 0) {
+    originalUrls.push(url)
+    shortUrls.push(shortUrls.length)
+
+    return res.json({
+      original_url: url,
+      short_url: shortUrls.length - 1
+    });
+  }
+
+  return res.json({
+    original_url: url,
+    short_url: shortUrls[foundIndex]
+  });
+});
+
+app.get('/api/shorturl/:shorturl', (res, req) => {
+  const shorturl = (+req.params.shorturl);
+  const foundIndex = shortUrls.indexOf(shorturl);
+
+  if (foundIndex < 0) {
+    return res.json({
+      'error': 'No short URL ffound for the given input'
+    });
+  }
+  res.redirect(originalUrls[foundIndex]);
 });
 
 // STEPS TO BUILD A URL SHORTENER
@@ -41,18 +82,6 @@ app.get('/api/hello', function(req, res) {
 //14. DECLARE IF STATEMENT IF foundIndex IS NOT FOUND
 //15. RETURN JSON RES "error": "No short URL found for the given input"
 //16. redirect THE RES TO THE originalUrls foundIndex
-
-app.post('/api/shorturl', (req, res) => {
-  if (inValidUrl) {
-    res.json({ error: 'invalid url' });
-    return;
-  }
-
-  res.json({
-    original_url: 'https://freeCodeCamp.org',
-    short_url: 1
-  });
-});
 
 app.listen(port, function() {
   console.log(`Listening on port ${port}`);
