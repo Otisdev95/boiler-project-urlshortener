@@ -21,6 +21,17 @@ app.get('/api/hello', function(req, res) {
   res.json({ greeting: 'hello API' });
 });
 
+// This endpoint handles a POST request to /api/shorturl.
+// It extracts the URL from the request body (req.body.url).
+// Checks if the URL is valid (starts with 'https://' or 'http://').
+// If not, it returns a JSON response with an error message.
+// Checks if the URL is already in the originalUrls array. If not, it
+// adds the URL to originalUrls and assigns a corresponding short URL
+// index to it in shortUrls. It then returns a JSON response with the
+// original and short URLs.
+// If the URL is already in the originalUrls, it returns a JSON response
+// with the original and corresponding short URL.
+
 const originalUrls = [];
 const shortUrls = [];
 
@@ -48,6 +59,14 @@ app.post('/api/shorturl', (req, res) => {
   });
 });
 
+// This endpoint handles a GET request to /api/shorturl/:shorturl.
+// It extracts the short URL index from the request
+// parameters (req.params.shorturl).
+// Checks if the short URL index is in the shortUrls array.
+// If not, it returns a JSON response with an error message.
+// If the short URL index is found, it redirects the user to
+// the corresponding original URL.
+
 app.get('/api/shorturl/:shorturl', (req, res) => {
   const shorturl = parseInt(req.params.shorturl);
   const foundIndex = shortUrls.indexOf(shorturl);
@@ -60,29 +79,6 @@ app.get('/api/shorturl/:shorturl', (req, res) => {
 
   res.redirect(originalUrls[foundIndex]);
 });
-
-// STEPS TO BUILD A URL SHORTENER
-// 1. PASS IN express.json MIDDLEWARE TO HANDLE urlEncoded
-//    app.use(express.urlEncoded({ extended: true }));
-// 2. DECLARE A POST END-POINT
-// 3. DECLARE originalUrls and shortUrls []
-// 4. DECLARE url
-// 5. DECLARE foundIndex OF originalUrls TO url
-// 6. DECLARE ERROR MSG FOR WRONG URL
-//    if (!url.includes('http://') && !url.includes('https://')) {
-//      return res.json({ error: 'invalid url' });
-//    }
-// 7. 
-// 8. PUSH originalUlrs TO url AND shortUrls TO shortUrls.length
-// 9. RETURN A JSON RES of original_url: to url AND short_url to - 1.
-//10. BUT IF FOUND, RETURN JSON RES OF original_url TO url AND
-//    short_url TO shortUrls[foundIndex]
-//11. DECLARE A GET END-POINT app.get('/api/shorturl/:shorturl')
-//12. DECLARE shorturl (parseInt TO TURN IT INTO A NUMBER)
-//13. DECLARE foundIndex OF shortUrls TO shorturl
-//14. DECLARE IF STATEMENT IF foundIndex IS NOT FOUND
-//15. RETURN JSON RES "error": "No short URL found for the given input"
-//16. redirect THE RES TO THE originalUrls foundIndex
 
 app.listen(port, function() {
   console.log(`Listening on port ${port}`);
