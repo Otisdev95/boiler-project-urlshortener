@@ -24,7 +24,7 @@ app.get('/api/hello', function(req, res) {
 const originalUrls = [];
 const shortUrls = [];
 
-app.post('/api/shorturl', (res, req) => {
+app.post('/api/shorturl', (req, res) => {
   const url = req.body.url;
   const foundIndex = originalUrls.indexOf(url);
 
